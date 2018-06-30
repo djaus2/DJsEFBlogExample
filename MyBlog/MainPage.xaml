@@ -11,8 +11,8 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel>
             <TextBox Name="NewBlogUrl"></TextBox>
-            <Button Click="Add_Click">Add</Button>
-            <ListView Name="Blogs">
+            <Button Click="AddBlog_Click">Add</Button>
+            <ListView Name="BlogsList">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Url}" />

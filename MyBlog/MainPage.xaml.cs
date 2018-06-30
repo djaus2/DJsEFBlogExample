@@ -22,6 +22,9 @@ namespace EFGetStarted.UWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        List<Blog> Blogs;
+        List<Post> Posts;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -31,11 +34,12 @@ namespace EFGetStarted.UWP
         {
             using (var db = new BloggingContext())
             {
-                Blogs.ItemsSource = db.Blogs.ToList();
+                Blogs = db.Blogs.ToList();
+                BlogsList.ItemsSource = Blogs;
             }
         }
 
-        private void Add_Click(object sender, RoutedEventArgs e)
+        private void AddBlog_Click(object sender, RoutedEventArgs e)
         {
             using (var db = new BloggingContext())
             {
@@ -43,7 +47,8 @@ namespace EFGetStarted.UWP
                 db.Blogs.Add(blog);
                 db.SaveChanges();
 
-                Blogs.ItemsSource = db.Blogs.ToList();
+                Blogs = db.Blogs.ToList();
+                BlogsList.ItemsSource = Blogs;
             }
         }
     }

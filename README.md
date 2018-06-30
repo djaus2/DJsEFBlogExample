@@ -10,3 +10,11 @@ Also using my hints in Entity Framework with UWP and SQLite: Referencing the Mod
 
 There is an issue with respect to referencing an EF Framework Core class library from a UWP app. This solution has resolved the issue.
 
+# Branches
+## Master
+This is the main sequence, latest version is here.
+
+This starts with the example in Microsoft Docs example at [https://docs.microsoft.com/en-us/ef/core/get-started/uwp/getting-started] entitled: **"Getting Started with EF Core on Universal Windows Platform (UWP) with a New Database"**
+
+## 1. MSDocsExample
+Steps as per, and only as per, the Microsoft Docs example with a few small refinemnets

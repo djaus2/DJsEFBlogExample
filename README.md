@@ -12,7 +12,9 @@ There is an issue with respect to referencing an EF Framework Core class library
 
 # Branches
 ## Master
-This starts with the example in Microsoft Docs example at [https://docs.microsoft.com/en-us/ef/core/get-started/uwp/getting-started]{Getting Started with EF Core on Universal Windows Platform (UWP) with a New Database)
+This is the main sequence, latest version is here.
 
-## Part 1
-As per the Microsoft Docs example with a few small refinemnets
+This starts with the example in Microsoft Docs example at [https://docs.microsoft.com/en-us/ef/core/get-started/uwp/getting-started] entitled: **"Getting Started with EF Core on Universal Windows Platform (UWP) with a New Database"**
+
+## 1. MSDocsExample
+Steps as per, and only as per, the Microsoft Docs example with a few small refinemnets

@@ -186,31 +186,30 @@ namespace EFGetStarted.UWP
                 case "Delete Current Post":
                     if (int.TryParse(idStr, out id))
                     {
-                        if (BlogsList.SelectedIndex != -1)
-                        {
-                            if (id > 0)
-                                using (var db = new BloggingContext())
+
+                        if (id > 0)
+                            using (var db = new BloggingContext())
+                            {
+                                lPost = (from p in AllPosts where p.PostId == id select p).FirstOrDefault();
+                                if (lPost != null)
                                 {
-                                    lPost = (from p in AllPosts where p.PostId == id select p).FirstOrDefault();
-                                    if (lPost != null)
-                                    {
 
-                                        var res = db.Posts.Remove(lPost);
+                                    var res = db.Posts.Remove(lPost);
 
-                                        int i = db.SaveChanges();
+                                    int i = db.SaveChanges();
 
-                                        AllBlogs = db.Blogs.ToList();
-                                        BlogsList.ItemsSource = AllBlogs;
+                                    AllBlogs = db.Blogs.ToList();
+                                    BlogsList.ItemsSource = AllBlogs;
 
-                                        AllPosts = db.Posts.ToList();
+                                    AllPosts = db.Posts.ToList();
 
-                                        PostId.Text = "";
-                                        NewPostTitle.Text = "";
-                                        NewPostContent.Text = "";
-                                        NewPostBlog.Text = "";
-                                    }
+                                    PostId.Text = "";
+                                    NewPostTitle.Text = "";
+                                    NewPostContent.Text = "";
+                                    NewPostBlog.Text = "";
                                 }
-                        }
+                            }
+                        
                     }
                     break;
             }

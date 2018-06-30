@@ -10,15 +10,48 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel>
-            <TextBox Name="NewBlogUrl"></TextBox>
-            <Button Click="AddBlog_Click">Add</Button>
-            <ListView Name="BlogsList">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Url}" />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Width="100" TextAlignment="Right">Url:</TextBlock>
+                <TextBox Name="NewBlogUrl" Width="400" PlaceholderText="Enter a URL and then press [Add Blog]"  ></TextBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+
+                <Button Click="AddBlog_Click">Add Blog</Button>
+                <Button Click="Button_Click" Margin="10,0,0,0">Add Post to Blog</Button>
+                <Button Click="Button_Click" Margin="10,0,0,0">Prev Post</Button>
+                <Button Click="Button_Click" Margin="10,0,0,0">Next Post</Button>
+                <Button Click="Button_Click" Margin="10,0,0,0">Delete Selected Blog</Button>
+                <Button Click="Button_Click" Margin="10,0,0,0">Delete Current Post</Button>
+
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Width="100" TextAlignment="Right">Blogs:</TextBlock>
+                <ListView Name="BlogsList" Height="120" SelectionChanged="Blogs_SelectionChanged" >
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Url}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Width="100" TextAlignment="Right">PostId:</TextBlock>
+                <TextBlock Name="PostId" Width="100" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Width="100" TextAlignment="Right">Blog:</TextBlock>
+                <TextBlock Name="NewPostBlog" Width="400" ></TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Width="100" TextAlignment="Right">Title:</TextBlock>
+                <TextBox Name="NewPostTitle" Width="400" PlaceholderText="Select a Blog and Enter a Post Title"  />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Width="100" TextAlignment="Right">Content:</TextBlock>
+                <TextBox Name="NewPostContent" TextWrapping="Wrap" Height="100" Width="800" AcceptsReturn="True" PlaceholderText="Enter Content for Blog Post and then press [Add Post to Blog]"></TextBox>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>
+

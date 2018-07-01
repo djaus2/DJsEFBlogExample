@@ -27,17 +27,17 @@ namespace EFGetStarted.UWP
             this.InitializeComponent();
         }
 
-        List<Blog> AllBlogs;
-        List<Post> AllPosts;
+        List<Blog> Blogs;
+        List<Post> Posts;
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             using (var db = new BloggingContext())
             {
                 //AllPosts = db.Posts.ToList();
-                AllBlogs = db.Blogs.ToList();
-                BlogsList.ItemsSource = AllBlogs;
-                AllPosts = db.Posts.ToList();
+                Blogs = db.Blogs.ToList();
+                BlogsList.ItemsSource = Blogs;
+                Posts = db.Posts.ToList();
             }
         }
 
@@ -50,64 +50,102 @@ namespace EFGetStarted.UWP
                 db.SaveChanges();
 
                 //AllPosts = db.Posts.ToList();
-                AllBlogs = db.Blogs.ToList();
-                BlogsList.ItemsSource = AllBlogs;
+                Blogs = db.Blogs.ToList();
+                BlogsList.ItemsSource = Blogs;
             }
         }
 
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void BlogButton_Click(object sender, RoutedEventArgs e)
+        {
+            Blog CurrentBlog;
+
+            string content = (sender is Button) ? (string)((Button)sender).Content : "";
+            if (content == "")
+                return;
+            CurrentBlog = (Blog)BlogsList.SelectedItem;
+            
+            switch (content)
+            {
+                case "Update Selected Blog":
+                    CurrentBlog.Url = NewBlogUrl.Text;
+                    using (var db = new BloggingContext())
+                    {                       
+                        var res = db.Blogs.Update(CurrentBlog);
+
+                        int i = db.SaveChanges();
+
+                        Blogs = db.Blogs.ToList();
+                        BlogsList.ItemsSource = Blogs;
+                    }
+                    break;
+                case "Delete Selected Blog":
+                    using (var db = new BloggingContext())
+                    {
+                        var res = db.Blogs.Remove(CurrentBlog);
+
+                        int i = db.SaveChanges();
+
+                        Blogs = db.Blogs.ToList();
+                        BlogsList.ItemsSource = Blogs;
+
+                        PostId.Text = "";
+                        NewPostTitle.Text = "";
+                        NewPostContent.Text = "";
+                        NewPostBlog.Text = "";
+                    }
+                    break;
+            }
+        }
+
+        private void AddPost_Click(object sender, RoutedEventArgs e)
+        {
+            Blog CurrentBlog;
+            if (BlogsList.SelectedIndex != -1)
+            {
+                CurrentBlog = (Blog)BlogsList.SelectedItem;
+                using (var db = new BloggingContext())
+                {
+                    var post = new Post
+                    {
+                        BlogId = CurrentBlog.BlogId,
+                        Title = NewPostTitle.Text,
+                        Content = NewPostContent.Text
+                    };
+
+                    var res = db.Posts.Add(post);
+                    if (res.State == Microsoft.EntityFrameworkCore.EntityState.Added)
+                    {
+                        post = res.Entity;
+                    }
+
+                    int i = db.SaveChanges();
+
+                    
+                    Posts = db.Posts.ToList();
+
+                    PostId.Text = post.PostId.ToString();
+
+                    //The next query is required so that FK Post reference works in subsequent line.
+                    Blogs = db.Blogs.ToList();
+                    NewPostBlog.Text = post.Blog.Url;
+                }
+
+            }
+        }
+
+        private void PostButton_Click(object sender, RoutedEventArgs e)
         {
             string idStr = PostId.Text;
             int id;
-            Blog lBlog;
-            Post lPost;
+
+            Post CurrentPost;
 
             string content = (sender is Button) ? (string)((Button)sender).Content : "";
             if (content == "")
                 return;
             switch (content)
             {
-                case "Add Post to Blog":
-                    if (BlogsList.SelectedIndex != -1)
-                    {
-                        lBlog = (Blog)BlogsList.SelectedItem;
-                        using (var db = new BloggingContext())
-                        {
-                            var post = new Post
-                            {
-                                BlogId = lBlog.BlogId,
-                                Title = NewPostTitle.Text,
-                                Content = NewPostContent.Text
-                            };
-
-                            var res = db.Posts.Add(post);
-                            if (res.State == Microsoft.EntityFrameworkCore.EntityState.Added)
-                            {
-                                post = res.Entity;
-                            }
-
-                            int i = db.SaveChanges();
-
-                            //AllPosts = db.Posts.ToList();
-                            AllBlogs = db.Blogs.ToList();
-                            BlogsList.ItemsSource = AllBlogs;
-                            AllPosts = db.Posts.ToList();
-
-                            PostId.Text = post.PostId.ToString();
-                            NewPostBlog.Text = post.Blog.Url;
-
-
-                            //Post newPost = (from p in AllPosts where p.PostId == post.PostId select p).FirstOrDefault();
-                            //if (newPost != null)
-                            //{
-                            //    PostId.Text = newPost.PostId.ToString();
-                            //    NewPostBlog.Text = newPost.Blog.Url;
-                            //}
-                        }
-
-                    }
-                    break;
                 case "Prev Post":
                     if (int.TryParse(idStr, out id))
                     {
@@ -119,14 +157,17 @@ namespace EFGetStarted.UWP
 
                             using (var db = new BloggingContext())
                             {
-                                AllBlogs = db.Blogs.ToList();
-                                AllPosts = db.Posts.ToList();
-                                lPost = (from p in AllPosts where p.PostId == id select p).FirstOrDefault();
-                                if (lPost != null)
+                                //Hint: Don't do next line ,otherwise need ** below is needed
+                                //Posts = db.Posts.ToList();
+                                CurrentPost = (from p in Posts where p.PostId == id select p).FirstOrDefault();
+                                if (CurrentPost != null)
                                 {
-                                    NewPostTitle.Text = lPost.Title;
-                                    NewPostContent.Text = lPost.Content;
-                                    NewPostBlog.Text = lPost.Blog.Url;
+                                    NewPostTitle.Text = CurrentPost.Title;
+                                    NewPostContent.Text = CurrentPost.Content;
+
+                                    // ** The next query is required so that FK Post reference works in subsequent line.
+                                    // ** Blogs = db.Blogs.ToList();
+                                    NewPostBlog.Text = CurrentPost.Blog.Url;
                                 }
                                 else
                                 {
@@ -145,14 +186,17 @@ namespace EFGetStarted.UWP
                         PostId.Text = id.ToString();
                         using (var db = new BloggingContext())
                         {
-                            AllBlogs = db.Blogs.ToList();
-                            AllPosts = db.Posts.ToList();
-                            lPost = (from p in AllPosts where p.PostId == id select p).FirstOrDefault();
-                            if (lPost != null)
+                            //Hint: Don't do next line ,otherwise need ** below is needed
+                            //Posts = db.Posts.ToList();
+                            CurrentPost = (from p in Posts where p.PostId == id select p).FirstOrDefault();
+                            if (CurrentPost != null)
                             {
-                                NewPostTitle.Text = lPost.Title;
-                                NewPostContent.Text = lPost.Content;
-                                NewPostBlog.Text = lPost.Blog.Url;
+                                NewPostTitle.Text = CurrentPost.Title;
+                                NewPostContent.Text = CurrentPost.Content;
+
+                                // ** The next query is required so that FK Post reference works in subsequent line.
+                                // ** Blogs = db.Blogs.ToList();
+                                NewPostBlog.Text = CurrentPost.Blog.Url;
                             }
                             else
                             {
@@ -163,24 +207,25 @@ namespace EFGetStarted.UWP
                         }
                     }
                     break;
-                case "Delete Selected Blog":
-                    lBlog = (Blog)BlogsList.SelectedItem;
-                    using (var db = new BloggingContext())
+                case "Update Current Post":
+                    if (int.TryParse(idStr, out id))
                     {
+                        if (id > 0)
+                            using (var db = new BloggingContext())
+                            {
+                                CurrentPost = (from p in Posts where p.PostId == id select p).FirstOrDefault();
+                                if (CurrentPost != null)
+                                {
+                                    CurrentPost.Title = NewPostTitle.Text;
+                                    CurrentPost.Content = NewPostContent.Text;
+                                    var res = db.Posts.Update(CurrentPost);
 
+                                    int i = db.SaveChanges();
 
-                        var res = db.Blogs.Remove(lBlog);
+                                    Posts = db.Posts.ToList();
+                                }
+                            }
 
-                        int i = db.SaveChanges();
-
-                        AllBlogs = db.Blogs.ToList();
-                        BlogsList.ItemsSource = AllBlogs;
-                        AllPosts = db.Posts.ToList();
-
-                        PostId.Text = "";
-                        NewPostTitle.Text = "";
-                        NewPostContent.Text = "";
-                        NewPostBlog.Text = "";
                     }
                     break;
                 case "Delete Current Post":
@@ -190,18 +235,18 @@ namespace EFGetStarted.UWP
                         if (id > 0)
                             using (var db = new BloggingContext())
                             {
-                                lPost = (from p in AllPosts where p.PostId == id select p).FirstOrDefault();
-                                if (lPost != null)
+                                CurrentPost = (from p in Posts where p.PostId == id select p).FirstOrDefault();
+                                if (CurrentPost != null)
                                 {
 
-                                    var res = db.Posts.Remove(lPost);
+                                    var res = db.Posts.Remove(CurrentPost);
 
                                     int i = db.SaveChanges();
 
-                                    AllBlogs = db.Blogs.ToList();
-                                    BlogsList.ItemsSource = AllBlogs;
+                                    Blogs = db.Blogs.ToList();
+                                    BlogsList.ItemsSource = Blogs;
 
-                                    AllPosts = db.Posts.ToList();
+                                    Posts = db.Posts.ToList();
 
                                     PostId.Text = "";
                                     NewPostTitle.Text = "";
@@ -209,7 +254,7 @@ namespace EFGetStarted.UWP
                                     NewPostBlog.Text = "";
                                 }
                             }
-                        
+
                     }
                     break;
             }
@@ -222,15 +267,13 @@ namespace EFGetStarted.UWP
 
                 using (var db = new BloggingContext())
                 {
-                    //AllBlogs = db.Blogs.ToList();
-                    Blog Blog = (Blog)BlogsList.SelectedItem;
-                    //Blog = (from b in AllBlogs where b.BlogId == Blog.BlogId select b).First();
-                    if (Blog != null)
+                    Blog CurrentBlog = (Blog)BlogsList.SelectedItem;
+                    if (CurrentBlog != null)
                     {
-                        if (Blog.Posts != null)
-                            if (Blog.Posts.Count != 0)
+                        if (CurrentBlog.Posts != null)
+                            if (CurrentBlog.Posts.Count != 0)
                             {
-                                Post Post = Blog.Posts.First();
+                                Post Post = CurrentBlog.Posts.First();
                                 PostId.Text = Post.PostId.ToString();
                                 NewPostTitle.Text = Post.Title;
                                 NewPostContent.Text = Post.Content;

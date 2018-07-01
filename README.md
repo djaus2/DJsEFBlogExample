@@ -18,3 +18,7 @@ This starts with the example in Microsoft Docs example at [https://docs.microsof
 
 ## 1. MSDocsExample
 Steps as per, and only as per, the Microsoft Docs example with a few small refinemnets
+
+## 2. AddPostsAndCRUD
+Can add posts to a Blog. Also implements CRUD besides CREATE (Lblogs and Posts) can READ (query to get Posts for a Blog), can UPDATE Blog and Post, and DELETE (can delete indivual Posts or a Blog and all of of its Posts.
+

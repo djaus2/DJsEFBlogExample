@@ -16,11 +16,11 @@ Apart from the Master, the other branches are snapshots of the Master at various
 ## Master
 This is the main sequence, latest version is here.
 
-This starts with the example in Microsoft Docs example at [https://docs.microsoft.com/en-us/ef/core/get-started/uwp/getting-started] entitled: **"Getting Started with EF Core on Universal Windows Platform (UWP) with a New Database"**. That only implements adding Blogs, no Posts created. The app is then implements Posts creation and some CRUD, database manipulations.
+This starts with the example in Microsoft Docs example at [https://docs.microsoft.com/en-us/ef/core/get-started/uwp/getting-started] entitled: **"Getting Started with EF Core on Universal Windows Platform (UWP) with a New Database"**. That only implements adding Blogs, no Posts created. The app then implements Posts creation and some CRUD, database manipulations.
 
 ## 1. MSDocsExample
 Steps as per, and only as per, the Microsoft Docs example with a few small refinemnets
 
 ## 2. AddPostsAndCRUD
-Can add posts to a Blog. Also implements CRUD besides CREATE (Lblogs and Posts) can READ (query to get Posts for a Blog), can UPDATE Blog and Post, and DELETE (can delete indivual Posts or a Blog and all of of its Posts.
+Can add posts to a Blog. Also implements database **CRUD:** Besides CREATE (Blogs and Posts) can READ (query to get Posts for a Blog), can UPDATE (Blog and Post updates), and DELETE (can delete indivual Posts or a Blog and all of of its Posts .. Cascasde Deletes used for that).
 
